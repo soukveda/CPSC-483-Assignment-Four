@@ -1,7 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from torchvision import datasets, transforms
 
 ######################## Getting familiar with image processing ########################
+### Download and load the dataset from the torch vision library to the directory specified by root=''
+# MNIST is a collection of 7000 handwritten digits (in images) split into 60000 training images and 1000 for testing 
+# PyTorch library provides a clean data set. The following command will download training data in directory './data'
+transforms = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,),(0.5,)),])
+train_dataset=datasets.MNIST(root='./data', train=True, transform=transforms, download=True)
+test_dataset=datasets.MNIST(root='./data', train=False, transform=transforms, download=False)
+print("> Shape of training data:", train_dataset.data.shape)
+print("> Shape of testing data:", test_dataset.data.shape)
+print("> Classes:", train_dataset.classes)
 # Converting an image to NumPy array and save it to a CSV file
 # Reading an image using matplotlib
 print("----------- Examples for converting images to array objects-----------")
