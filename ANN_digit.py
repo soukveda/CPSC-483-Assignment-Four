@@ -300,6 +300,7 @@ loss_func = nn.CrossEntropyLoss()
 # optim.SGD performs gradient descent and update the weigths through backpropagation.
 num_epochs = 1
 alpha = 0.001       # learning rate
+cnn_alpha = 0.001   # learning rate for CNN
 gamma = 0.5        # momentum
 # Stochastic Gradient Descent (SGD) is used in this program.
 #+ You can choose other gradient methods (Adagrad, adadelta, Adam, etc.) and parameters
@@ -310,7 +311,7 @@ for var_name in MLP_optimizer.state_dict():
 
 # CNN optimizer
 # CNN_optimizer = optim.SGD(CNN_model.parameters(), lr=alpha, momentum=gamma) 
-CNN_optimizer = optim.Adam(CNN_model.parameters(), lr=alpha)
+CNN_optimizer = optim.Adam(CNN_model.parameters(), lr=cnn_alpha)
 
 ### Train your networks
 print("............Training MLP................")
