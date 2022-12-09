@@ -328,7 +328,11 @@ print(predicted_digits)
 
 print("............Training CNN................")
 is_MLP = False
+cnn_current_time = time.time()
 train_loss=train_ANN_model(num_epochs, train_dataloader, device, CUDA_enabled, is_MLP, CNN_model, loss_func, CNN_optimizer)
+cnn_training_time = "{:.2f}".format(time.time() - cnn_current_time)
+print("Training Time {} seconds".format(cnn_training_time))
+
 print("............Testing CNN model................")
 predicted_digits=test_ANN_model(device, CUDA_enabled, is_MLP, CNN_model, test_dataloader)
 print("> Predicted digits by CNN model")
