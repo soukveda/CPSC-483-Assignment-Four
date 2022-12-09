@@ -44,9 +44,27 @@ class CNN(nn.Module):
         # max_pool2d(input_tensor, kernel_size, stride=None, padding=0) for 2D max pooling
         # Output size for W from POOL = (W-F)/S+1 where S=stride=dimension of pool
         # K is # of channels for convolution layer; D is # of channels for pooling layer
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=5) # K=D=10, output_size W=(28-5)/1+1=24 (24x24), (default S=1)
-        self.pool1 = nn.MaxPool2d(4, 4) # W = (24-4)/4+1=6 (6x6), S=4 (pool dimension) since no overlapping regions
+
+        # convolution / pool layer 1
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=3) # K=D=10, output_size W=(28-5)/1+1=24 (24x24), (default S=1)
+        self.pool1 = nn.MaxPool2d(3, 1) # W = (24-4)/4+1=6 (6x6), S=4 (pool dimension) since no overlapping regions
         self.dropout_conv1 = nn.Dropout2d(dropout_pr) # to avoid overfitting by dropping some nodes
+
+        # convolution / pool layer 2
+        self.conv2 = nn.Conv2d(10, 10, kernel_size=3) # K=D=10, output_size W=(24-5+4)/1+1=24 (24x24), (default S=1)
+        self.pool2 = nn.MaxPool2d(3, 1) # W = (24-4)/4+1=6 (6x6), S=4 (pool dimension) since no overlapping regions
+        self.dropout_conv2 = nn.Dropout2d(dropout_pr) # to avoid overfitting by dropping some nodes
+
+        # convolution / pool layer 3
+        self.conv3 = nn.Conv2d(10, 10, kernel_size=3) # K=D=10, output_size W=(24-5+4)/1+1=24 (24x24), (default S=1)
+        self.pool3 = nn.MaxPool2d(3, 1) # W = (24-4)/4+1=6 (6x6), S=4 (pool dimension) since no overlapping regions
+        self.dropout_conv3 = nn.Dropout2d(dropout_pr) # to avoid overfitting by dropping some nodes
+
+        # convolution / pool layer 4
+        self.conv4 = nn.Conv2d(10, 10, kernel_size=5) # K=D=10, output_size W=(24-5+4)/1+1=24 (24x24), (default S=1)
+        self.pool4 = nn.MaxPool2d(2, 2) # W = (24-4)/4+1=6 (6x6), S=4 (pool dimension) since no overlapping regions
+        self.dropout_conv4 = nn.Dropout2d(dropout_pr) # to avoid overfitting by dropping some nodes
+
         #+ You can add more convolutional and pooling layers
         # Fully connected layer after convolutional and pooling layers
         self.num_flatten_nodes = 10*6*6 # Flatten nodes from 10 channels and 6*6 pool_size = 10*6*6=360
@@ -57,6 +75,20 @@ class CNN(nn.Module):
     def forward(self, x):
         out = AF.relu(self.pool1(self.conv1(x)))
         out = AF.relu(self.dropout_conv1(out))
+        # print(out.shape)
+
+        out = AF.relu(self.pool2(self.conv2(out)))
+        out = AF.relu(self.dropout_conv2(out))
+        # print(out.shape)
+
+        out = AF.relu(self.pool3(self.conv3(out)))
+        out = AF.relu(self.dropout_conv3(out))
+        # print(out.shape)
+
+        out = AF.relu(self.pool4(self.conv4(out)))
+        out = AF.relu(self.dropout_conv4(out))
+        # print(out.shape)
+
         out = out.view(-1, self.num_flatten_nodes) # flattening
         out = AF.relu(self.fc1(out))
         # Apply dropout for the randomly selected nodes by zeroing out before output during training
@@ -236,7 +268,7 @@ if show_digit_image:
 # Architectural parameters: You can change these parameters except for num_input and num_classes
 num_input = 28*28   # 28X28=784 pixels of image
 num_classes = 10    # output layer
-num_hidden = 10     # number of neurons at the first hidden layer
+num_hidden = 50    # number of neurons at the first hidden layer
 # Randomly selected neurons by dropout_pr probability will be dropped (zeroed out) for regularization.
 dropout_pr = 0.05
 
@@ -267,7 +299,7 @@ loss_func = nn.CrossEntropyLoss()
 # model hyperparameters and gradient methods
 # optim.SGD performs gradient descent and update the weigths through backpropagation.
 num_epochs = 1
-alpha = 0.01       # learning rate
+alpha = 0.03       # learning rate
 gamma = 0.5        # momentum
 # Stochastic Gradient Descent (SGD) is used in this program.
 #+ You can choose other gradient methods (Adagrad, adadelta, Adam, etc.) and parameters
