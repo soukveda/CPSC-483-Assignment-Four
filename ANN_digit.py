@@ -299,7 +299,7 @@ loss_func = nn.CrossEntropyLoss()
 # model hyperparameters and gradient methods
 # optim.SGD performs gradient descent and update the weigths through backpropagation.
 num_epochs = 1
-alpha = 0.03       # learning rate
+alpha = 0.001       # learning rate
 gamma = 0.5        # momentum
 # Stochastic Gradient Descent (SGD) is used in this program.
 #+ You can choose other gradient methods (Adagrad, adadelta, Adam, etc.) and parameters
@@ -309,11 +309,12 @@ for var_name in MLP_optimizer.state_dict():
     print(var_name, MLP_optimizer.state_dict()[var_name])
 
 # CNN optimizer
-CNN_optimizer = optim.SGD(CNN_model.parameters(), lr=alpha, momentum=gamma) 
+# CNN_optimizer = optim.SGD(CNN_model.parameters(), lr=alpha, momentum=gamma) 
+CNN_optimizer = optim.Adam(CNN_model.parameters(), lr=alpha)
 
 ### Train your networks
 print("............Training MLP................")
-# To turn on/off CUDA if I don't want to use it.
+# # To turn on/off CUDA if I don't want to use it.
 CUDA_enabled = True
 is_MLP = True
 train_loss=train_ANN_model(num_epochs, train_dataloader, device, CUDA_enabled, is_MLP, MLP_model, loss_func, MLP_optimizer)
