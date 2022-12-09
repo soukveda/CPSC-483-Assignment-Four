@@ -46,23 +46,23 @@ class CNN(nn.Module):
         # K is # of channels for convolution layer; D is # of channels for pooling layer
 
         # convolution / pool layer 1
-        self.conv1 = nn.Conv2d(1, 10, kernel_size=3) # K=D=10, output_size W=(28-5)/1+1=24 (24x24), (default S=1)
-        self.pool1 = nn.MaxPool2d(3, 1) # W = (24-4)/4+1=6 (6x6), S=4 (pool dimension) since no overlapping regions
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=3) # K=D=10, output_size W=(28-3)/1+1=26 (26x26), (default S=1)
+        self.pool1 = nn.MaxPool2d(3, 1) # W = (26-3)/1+1=24 (24x24), S=1 (pool dimension) since no overlapping regions
         self.dropout_conv1 = nn.Dropout2d(dropout_pr) # to avoid overfitting by dropping some nodes
 
         # convolution / pool layer 2
-        self.conv2 = nn.Conv2d(10, 10, kernel_size=3) # K=D=10, output_size W=(24-5+4)/1+1=24 (24x24), (default S=1)
-        self.pool2 = nn.MaxPool2d(3, 1) # W = (24-4)/4+1=6 (6x6), S=4 (pool dimension) since no overlapping regions
+        self.conv2 = nn.Conv2d(10, 10, kernel_size=3) # K=D=10, output_size W=(24-3)/1+1=22 (22x22), (default S=1)
+        self.pool2 = nn.MaxPool2d(3, 1) # W = (22-3)/1+1=20 (20x20), S=1 (pool dimension) since no overlapping regions
         self.dropout_conv2 = nn.Dropout2d(dropout_pr) # to avoid overfitting by dropping some nodes
 
         # convolution / pool layer 3
-        self.conv3 = nn.Conv2d(10, 10, kernel_size=3) # K=D=10, output_size W=(24-5+4)/1+1=24 (24x24), (default S=1)
-        self.pool3 = nn.MaxPool2d(3, 1) # W = (24-4)/4+1=6 (6x6), S=4 (pool dimension) since no overlapping regions
+        self.conv3 = nn.Conv2d(10, 10, kernel_size=3) # K=D=10, output_size W=(20-3)/1+1=18 (18x18), (default S=1)
+        self.pool3 = nn.MaxPool2d(3, 1) # W = (18-3)/1+1=6 (16x16), S=1 (pool dimension) since no overlapping regions
         self.dropout_conv3 = nn.Dropout2d(dropout_pr) # to avoid overfitting by dropping some nodes
 
         # convolution / pool layer 4
-        self.conv4 = nn.Conv2d(10, 10, kernel_size=5) # K=D=10, output_size W=(24-5+4)/1+1=24 (24x24), (default S=1)
-        self.pool4 = nn.MaxPool2d(2, 2) # W = (24-4)/4+1=6 (6x6), S=4 (pool dimension) since no overlapping regions
+        self.conv4 = nn.Conv2d(10, 10, kernel_size=5) # K=D=10, output_size W=(16-5)/1+1=12 (12x12), (default S=1)
+        self.pool4 = nn.MaxPool2d(2, 2) # W = (12-2)/2+1=6 (6x6), S=2 (pool dimension) since no overlapping regions
         self.dropout_conv4 = nn.Dropout2d(dropout_pr) # to avoid overfitting by dropping some nodes
 
         #+ You can add more convolutional and pooling layers
