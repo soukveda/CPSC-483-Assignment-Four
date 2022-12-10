@@ -70,6 +70,8 @@ class CNN(nn.Module):
         self.num_flatten_nodes = 10*6*6 # Flatten nodes from 10 channels and 6*6 pool_size = 10*6*6=360
         self.fc1 = nn.Linear(self.num_flatten_nodes, num_hidden)
         #+ You can add more hidden layers here if necessary
+        self.fc2 = nn.Linear(num_hidden, num_hidden)
+        self.fc3 = nn.Linear(num_hidden, num_hidden)
         self.out = nn.Linear(num_hidden, num_classes) # the output nodes are 10 classes (10 digits)
         
     def forward(self, x):
@@ -91,6 +93,8 @@ class CNN(nn.Module):
 
         out = out.view(-1, self.num_flatten_nodes) # flattening
         out = AF.relu(self.fc1(out))
+        out = AF.relu(self.fc2(out))
+        out = AF.relu(self.fc3(out))
         # Apply dropout for the randomly selected nodes by zeroing out before output during training
         out = AF.dropout(out)
         output = self.out(out)
@@ -269,6 +273,7 @@ if show_digit_image:
 num_input = 28*28   # 28X28=784 pixels of image
 num_classes = 10    # output layer
 num_hidden = 50    # number of neurons at the first hidden layer
+cnn_num_hidden = 150    # number of neurons at the first hidden layer
 # Randomly selected neurons by dropout_pr probability will be dropped (zeroed out) for regularization.
 dropout_pr = 0.05
 
@@ -288,7 +293,7 @@ for param_tensor in MLP_model.state_dict():
 #exit()
 
 # CNN model
-CNN_model = CNN(dropout_pr, num_hidden, num_classes)
+CNN_model = CNN(dropout_pr, cnn_num_hidden, num_classes)
 print("> CNN model parameters")
 print(CNN_model.parameters)
 
