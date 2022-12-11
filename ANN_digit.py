@@ -11,11 +11,24 @@ import time
 ### MLP architecture
 class MLP(nn.Module): # All models should inherit from nn.Module
     # This part can be changed based on the design decision.
-    def __init__(self, num_input, hidden1_size, num_classes): # Define our ANN structures here
+    def __init__(self, num_input, hidden1_size, hidden2_size, hidden3_size, hidden4_size, hidden5_size, hidden6_size, hidden7_size, hidden8_size, hidden9_size, hidden10_size, hidden11_size, hidden12_size, hidden13_size, num_classes):
         super(MLP, self).__init__()
         # nn.Linear(in_features, out_features, bias): y = w^Tx + bias
         self.hidden1 = nn.Linear(num_input, hidden1_size)    # connection between input and hidden layer1
-        self.output = nn.Linear(hidden1_size, num_classes)
+        self.hidden2 = nn.Linear(num_input, hidden2_size)
+        self.hidden3 = nn.Linear(num_input, hidden3_size)
+        self.hidden4 = nn.Linear(num_input, hidden4_size)
+        self.hidden5 = nn.Linear(num_input, hidden5_size)
+        self.hidden6 = nn.Linear(num_input, hidden6_size)
+        self.hidden7 = nn.Linear(num_input, hidden7_size)
+        self.hidden8 = nn.Linear(num_input, hidden8_size)
+        self.hidden9 = nn.Linear(num_input, hidden9_size)
+        self.hidden10 = nn.Linear(num_input, hidden10_size)
+        self.hidden11 = nn.Linear(num_input, hidden11_size)
+        self.hidden12 = nn.Linear(num_input, hidden12_size)
+        self.hidden13 = nn.Linear(num_input, hidden13_size)
+
+        self.output = nn.Linear(hidden13_size, num_classes)
         
         # The model structure can be also defined using "sequential" function
         # self.seq_linear=nn.Sequential(nn.Linear(num_input, hidden1_size),nn.RELU(),nn.Linear(hidden1_size, num_classes))
@@ -26,7 +39,20 @@ class MLP(nn.Module): # All models should inherit from nn.Module
         # In this implementation, the activation function is reLU, but you can try other functions
         # torch.nn.functional modeule consists of all the activation functions and output functions
         h1_out = AF.relu(self.hidden1(x))
-        output = self.output(h1_out)
+        h2_out = AF.relu(h1_out)
+        h3_out = AF.relu(h2_out)
+        h4_out = AF.relu(h3_out)
+        h5_out = AF.relu(h4_out)
+        h6_out = AF.relu(h5_out)
+        h7_out = AF.relu(h6_out)
+        h8_out = AF.relu(h7_out)
+        h9_out = AF.relu(h8_out)
+        h10_out = AF.relu(h9_out)
+        h11_out = AF.relu(h10_out)
+        h12_out = AF.relu(h11_out)
+        h13_out = AF.relu(h12_out)
+
+        output = self.output(h13_out)
         # AF.softmax() is NOT needed when CrossEntropyLoss() is used as it already combines both LogSoftMax() and NLLLoss()
         
         # return self.seq_linear(x) # If the model structrue is define by sequential function.
@@ -272,13 +298,25 @@ if show_digit_image:
 # Architectural parameters: You can change these parameters except for num_input and num_classes
 num_input = 28*28   # 28X28=784 pixels of image
 num_classes = 10    # output layer
-num_hidden = 50    # number of neurons at the first hidden layer
+num_hidden = 600
+num_hidden2 = 600
+num_hidden3 = 600
+num_hidden4 = 600
+num_hidden5 = 600
+num_hidden6 = 600
+num_hidden7 = 600
+num_hidden8 = 600
+num_hidden9 = 600
+num_hidden10 = 600
+num_hidden11 = 600
+num_hidden12 = 600
+num_hidden13 = 600    # number of neurons at the first hidden layer
 cnn_num_hidden = 150    # number of neurons at the first hidden layer
 # Randomly selected neurons by dropout_pr probability will be dropped (zeroed out) for regularization.
 dropout_pr = 0.05
 
 # MLP model
-MLP_model=MLP(num_input, num_hidden, num_classes)
+MLP_model=MLP(num_input, num_hidden, num_hidden2, num_hidden3, num_hidden4, num_hidden5, num_hidden6, num_hidden7, num_hidden8, num_hidden9, num_hidden10, num_hidden11, num_hidden12, num_hidden13, num_classes)
 # Some model properties: 
 # .state_dict(): a dictionary of trainable parameters with their current valeus
 # .parameter(): a list of all trainable parameters in the model
@@ -309,7 +347,8 @@ cnn_alpha = 0.001   # learning rate for CNN
 gamma = 0.5        # momentum
 # Stochastic Gradient Descent (SGD) is used in this program.
 #+ You can choose other gradient methods (Adagrad, adadelta, Adam, etc.) and parameters
-MLP_optimizer = optim.SGD(MLP_model.parameters(), lr=alpha, momentum=gamma) 
+#MLP_optimizer = optim.SGD(MLP_model.parameters(), lr=alpha, momentum=gamma) 
+MLP_optimizer = optim.Adam(MLP_model.parameters(), lr=alpha)
 print("> MLP optimizer's state dictionary")
 for var_name in MLP_optimizer.state_dict():
     print(var_name, MLP_optimizer.state_dict()[var_name])
@@ -323,11 +362,14 @@ print("............Training MLP................")
 # # To turn on/off CUDA if I don't want to use it.
 CUDA_enabled = True
 is_MLP = True
+MLP_current_time = time.time()
 train_loss=train_ANN_model(num_epochs, train_dataloader, device, CUDA_enabled, is_MLP, MLP_model, loss_func, MLP_optimizer)
 print("............Testing MLP model................")
 print("> Input digits:")
 print(labels)
 predicted_digits=test_ANN_model(device, CUDA_enabled, is_MLP, MLP_model, test_dataloader)
+MLP_training_time = "{:.2f}".format(time.time() - MLP_current_time)
+print("Training Time {} seconds".format(MLP_training_time))
 print("> Predicted digits by MLP model")
 print(predicted_digits)
 
@@ -348,7 +390,7 @@ print(predicted_digits)
 #"""
 print("...Saving and loading model states and model parameters...")
 torch.save(MLP_model.state_dict(), 'MLP_model_state_dict.pt')
-loaded_MLP_model=MLP(num_input, num_hidden, num_classes)
+loaded_MLP_model=MLP(num_input, num_hidden, num_hidden2, num_hidden3, num_hidden4, num_hidden5, num_hidden6, num_hidden7, num_hidden8, num_hidden9, num_hidden10, num_hidden11, num_hidden12, num_hidden13, num_classes)
 loaded_MLP_model=MLP_model.load_state_dict(torch.load('MLP_model_state_dict.pt'))
 torch.save(MLP_optimizer.state_dict(), 'MLP_optimizer_state_dict.pt')
 loaded_MLP_optimizer = MLP_optimizer.load_state_dict(torch.load('MLP_optimizer_state_dict.pt'))
